@@ -95,7 +95,7 @@ metrics = {}
 
 for name in target_name :
     # Lấy scaler 
-    full =  np.array(fine_tune_data[name] + test[name]).reshape(-1, 1)
+    full =  np.array(np.concatenate((fine_tune_data[name] + test[name])))
     print(np.array(fine_tune_data[name]).shape,np.array(test[name]).shape)
     # print(fine_tune_data[name])
     # print(test[name])
