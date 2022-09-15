@@ -110,7 +110,7 @@ for name in target_name :
     model = maml.net
 
     x , y = time_series_data(test[name][0], hyperconfig ,test_set.scaler)
-    for i in range(len(test[name]-1)) : 
+    for i in range(len(test[name])-1) : 
         x_ , y_ = time_series_data(test[name][i+1], hyperconfig ,test_set.scaler)
         x , y = np.concatenate(x, x_), np.concatenate(y, y_)
 
