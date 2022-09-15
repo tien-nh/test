@@ -11,7 +11,7 @@ train = []
 test = {}
 
 # read data
-config = json.load(open("config.json", "r"))
+config = json.load(open("config.json", "r", encoding="utf8"))
 source_folder = config["source_folder"]
 source_name = config["source"]
 target_name = config["target"]
@@ -22,7 +22,6 @@ for name in source_name:
     "finish": config["finish-train"]
     }
     data = load_time_data(source_folder, name, source_time)
-
     train = train + data 
 
 for name in target_name:
@@ -73,8 +72,9 @@ print('Total trainable tensors:', num)
 
 
 # training 
+# print(train)
 training_set_and_loader = get_set_and_loader(train, hyperconfig , True)
-for epoch in tqdm(range(200)):
+for epoch in tqdm(range(1)):
     # fetch meta_batchsz num of episode each time
     train_set, train_load = training_set_and_loader
     step = 0

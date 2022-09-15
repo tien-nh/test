@@ -62,6 +62,6 @@ def load_time_data(folder, src_name, time):
         else:
             if is_array_nan[i] == True or i == array.shape[0] - 1:
                 flag = False
-                if start - i > 100 :  
+                if i - start > 100 :  
                     data.append(np.expand_dims(array[start:i], axis=1))
     return data
