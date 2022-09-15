@@ -1,11 +1,14 @@
 import json
 import os
 import pandas as pd
-from utils import load_time_data, get_set_and_loader 
+from utils import load_time_data, get_set_and_loader , time_series_data
+from utils import indicator
 import torch
 from model import MAML
 import numpy as np
 import tqdm
+from sklearn.preprocessing import MinMaxScaler
+
 
 train = []
 test = {}
@@ -75,7 +78,8 @@ print('Total trainable tensors:', num)
 # training 
 # print(train)
 training_set_and_loader = get_set_and_loader(train, hyperconfig , True)
-for epoch in tqdm(range(2)):
+for epoch in range(2):
+    print(epoch)
     # fetch meta_batchsz num of episode each time
     train_set, train_load = training_set_and_loader
     step = 0
@@ -87,4 +91,36 @@ for epoch in tqdm(range(2)):
         # print()
         # print(x_spt.shape, y_spt.shape)
         accs = maml(x_spt, y_spt, x_qry, y_qry)
+
+metrics = {}
+
+for name in target_name :
+    # Lấy scaler 
+    full = np.concatenate((fine_tune_data[name],test[name]))
+    scaler = MinMaxScaler()
+    scaler.fit_transform(full)
+
+    tgt_data = [fine_tune_data[name]]
+    test_set_and_loader = get_set_and_loader(tgt_data, l, n, p, k_shot, k_query, 1, False, scaler)
+    test_set, test_load = test_set_and_loader
+    for x_spt, y_spt, x_qry, y_qry in test_load:
+        # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape)
+        x_spt, y_spt, x_qry, y_qry = x_spt.squeeze(0).to(device), y_spt.squeeze(0).to(device), x_qry.squeeze(0).to(device), y_qry.squeeze(0).to(device)
+        accs, fast_weights = maml.finetunning(x_spt, y_spt, x_qry, y_qry)
     
+    model = maml.net
+
+    x , y = time_series_data(test[name], hyperconfig ,test_set.scaler)
+    x_tensor, y_tensor = torch.from_numpy(x).to(device), torch.from_numpy(y).to(device)
+    pred = model(x_tensor, vars=fast_weights, bn_training=False)
+    print(y_tensor.shape, pred.shape)
+    label = test_set.reverse_normalize(y_tensor).numpy()
+    pred1 = test_set.reverse_normalize(pred.detach()).numpy()
+    metrics[name] = indicator(torch.tensor(pred1), torch.tensor(label))
+
+
+results = pd.DataFrame.from_dict(metrics, orient='index')
+name_file_csv =  "results/metric_" + hyperconfig["p"] + "_.csv"
+results.to_csv(name_file_csv)
+
+
