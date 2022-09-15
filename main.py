@@ -63,7 +63,7 @@ model_config = [
 ]
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-maml = MAML(config, hyperconfig).to(device)
+maml = MAML(model_config, hyperconfig).to(device)
 
 tmp = filter(lambda x: x.requires_grad, maml.parameters())
 num = sum(map(lambda x: np.prod(x.shape), tmp))
