@@ -76,7 +76,7 @@ print('Total trainable tensors:', num)
 
 # training 
 # print(train)
-training_set_and_loader = get_set_and_loader(train, hyperconfig, hyperconfig["n_way"] , True)
+training_set_and_loader = get_set_and_loader(train, hyperconfig, hyperconfig["n_way"] , True, None)
 for epoch in range(1):
     print(epoch)
     # fetch meta_batchsz num of episode each time

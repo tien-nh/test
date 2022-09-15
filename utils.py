@@ -46,9 +46,9 @@ def time_series_data(dataset, hyperconfig, scaler):
     y = np.array(y)
     return x, y
 
-def get_set_and_loader(data, hyperconfig, shuffle = True, scale_to_test=None):
+def get_set_and_loader(data, hyperconfig, n_way , shuffle = True, scale_to_test=None):
     # Create dataset and loader from data frame
-    dataset = StockDataset(data, hyperconfig, scale_to_test)
+    dataset = StockDataset(data, hyperconfig, n_way, scale_to_test)
 
     loader = DataLoader(dataset = dataset, 
                         batch_size = hyperconfig["n_way"], 

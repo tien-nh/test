@@ -4,14 +4,14 @@ import torch
 import numpy as np
 
 class StockDataset(Dataset):
-    def __init__(self, corps, hyperconfig, scale_to_test=None):
+    def __init__(self, corps, hyperconfig, n_way ,scale_to_test=None):
         self.l = hyperconfig["l"]
         self.n = hyperconfig["n"]
         self.p = hyperconfig["p"]
         
         self.k_shot = hyperconfig["k_shot"]
         self.k_query = hyperconfig["k_query"]
-        self.n_way = hyperconfig["n_way"]
+        self.n_way = n_way
 
         # Xử lý scale : 
         
