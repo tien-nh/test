@@ -22,6 +22,7 @@ for name in source_name:
     "finish": config["finish-train"]
     }
     data = load_time_data(source_folder, name, source_time)
+    # print(len(data))
     train = train + data 
 
 for name in target_name:
@@ -30,7 +31,7 @@ for name in target_name:
     "finish": "2023-01-01 00:00:00"
     }
     data = load_time_data(source_folder, name, target_time)
-    
+    # print(len(data))
     test[name] = data
     # test.append(np.expand_dims(data, axis=1))
 
@@ -74,7 +75,7 @@ print('Total trainable tensors:', num)
 # training 
 # print(train)
 training_set_and_loader = get_set_and_loader(train, hyperconfig , True)
-for epoch in tqdm(range(1)):
+for epoch in tqdm(range(2)):
     # fetch meta_batchsz num of episode each time
     train_set, train_load = training_set_and_loader
     step = 0
