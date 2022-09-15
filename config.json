@@ -18,7 +18,7 @@
           "S0000346_Định Công.csv", "S0000229_Quan Hoa.csv", 
           "S0000339_Kim Mã.csv", "S0000310_Hàng Trống.csv"],
 
-"source_folder" : "/content/content/res",
+"source_folder" : "/res",
 
     "start-train": "2019-12-31 23:59:59",
     "finish-train": "2022-01-01 00:00:00",
