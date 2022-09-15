@@ -122,8 +122,8 @@ for name in target_name :
     metrics[name] = indicator(torch.tensor(pred1), torch.tensor(label))
 
 
-# results = pd.DataFrame.from_dict(metrics, orient='index')
-# name_file_csv =  "results/metric_" + hyperconfig["p"] + "_.csv"
-# results.to_csv(name_file_csv)
+results = pd.DataFrame.from_dict(metrics, orient='index')
+name_file_csv =  "results/metric_" + hyperconfig["p"] + "_.csv"
+results.to_csv(name_file_csv)
 
 
