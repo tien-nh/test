@@ -95,13 +95,13 @@ metrics = {}
 
 for name in target_name :
     # Lấy scaler 
+    print(test)
     full =  np.array(np.concatenate((fine_tune_data[name] + test[name])))
     scaler = MinMaxScaler()
     scaler.fit_transform(full)
 
-    tgt_data = [fine_tune_data[name]]
+    tgt_data = fine_tune_data[name]
     test_set_and_loader = get_set_and_loader(tgt_data, hyperconfig, 1, False, scaler)
-    break
     test_set, test_load = test_set_and_loader
     for x_spt, y_spt, x_qry, y_qry in test_load:
         # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape)

@@ -20,8 +20,6 @@ class StockDataset(Dataset):
             self.data = [self.scaler.fit_transform(corp) for corp in corps]
         else : 
             self.scaler = scale_to_test
-            print("-------------------------")
-            print(corps)
             self.data = [self.scaler.transform(corp) for corp in corps]
 
         
