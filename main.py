@@ -95,7 +95,6 @@ metrics = {}
 
 for name in target_name :
     # Lấy scaler 
-    print(test)
     full =  np.array(np.concatenate((fine_tune_data[name] + test[name])))
     scaler = MinMaxScaler()
     scaler.fit_transform(full)
