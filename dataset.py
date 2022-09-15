@@ -21,7 +21,7 @@ class StockDataset(Dataset):
         else : 
             self.scaler = scale_to_test
             print("-------------------------")
-            print(([corp_.shape for corp_ in corp] for corp in corps))
+            print(corps)
             self.data = [self.scaler.transform(corp) for corp in corps]
 
         
