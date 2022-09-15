@@ -205,14 +205,14 @@ class Learner(nn.Module):
         return self.vars
 
 class MAML(nn.Module):
-    def __init__(self, config, update_lr, meta_lr, update_step, update_step_test):
+    def __init__(self, config, hyperconfig):
         super(MAML, self).__init__()
       
-        self.update_lr = update_lr
-        self.meta_lr = meta_lr
+        self.update_lr = hyperconfig["update_lr"]
+        self.meta_lr = hyperconfig["meta_lr"]
         
-        self.update_step = update_step
-        self.update_step_test = update_step_test
+        self.update_step = hyperconfig["update_step"]
+        self.update_step_test = hyperconfig["update_step_test"]
 
         self.net = Learner(config).double()
         self.meta_optim = optim.Adam(self.net.parameters(), lr=self.meta_lr)

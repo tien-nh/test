@@ -1,15 +1,17 @@
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import MinMaxScaler
+import torch
+import numpy as np
 
 class StockDataset(Dataset):
-    def __init__(self, corps, l, n, p, k_shot, k_query, n_way, scale_to_test=None):
-        self.l = l
-        self.n = n
-        self.p = p
+    def __init__(self, corps, hyperconfig, scale_to_test=None):
+        self.l = hyperconfig["l"]
+        self.n = hyperconfig["n"]
+        self.p = hyperconfig["p"]
         
-        self.k_shot = k_shot
-        self.k_query = k_query
-        self.n_way = n_way
+        self.k_shot = hyperconfig["k_shot"]
+        self.k_query = hyperconfig["k_query"]
+        self.n_way = hyperconfig["n_way"]
 
         # Xử lý scale : 
         
@@ -102,35 +104,3 @@ class StockDataset(Dataset):
         return self.episodes
 
 
-
-def time_series_data(dataset, l, n, p, scaler): 
-    data_length = len(dataset) - l - n - p + 1
-    print(data_length)
-    data = dataset
-    data = scaler.transform(data)
-    x = []
-    y = []
-    for idx in range(data_length):
-        idx2test = idx * 5 
-        if idx2test + 5 >= data_length : break   # cắt đuôi
-
-        x_idx = data[idx2test:idx2test+l].reshape(1,-1)
-        # y_idx = data[idx+l+n: idx+l+n+p] + data[idx+l-1 : idx+l]
-        y_idx = data[idx2test+l+n: idx2test+l+n+p] 
-
-        
-        x.append(x_idx)
-        y.append(y_idx.transpose())
-    x = np.array(x)
-    y = np.array(y)
-    return x, y 
-
-def get_set_and_loader(data, l, n, p, k_shot, k_query, n_way, shuffle = True, scale_to_test=None):
-    # Create dataset and loader from data frame
-    dataset = StockDataset(data, l, n, p, k_shot, k_query, n_way, scale_to_test)
-
-    loader = DataLoader(dataset = dataset, 
-                        batch_size = n_way, 
-                        shuffle = shuffle)
-
-    return dataset, loader
