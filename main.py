@@ -100,7 +100,7 @@ for name in target_name :
     # print(fine_tune_data[name])
     # print(test[name])
     scaler = MinMaxScaler()
-    print(full) 
+    print(full.shape) 
     break 
     scaler.fit_transform(full)
 
