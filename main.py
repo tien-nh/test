@@ -95,12 +95,12 @@ metrics = {}
 
 for name in target_name :
     # Lấy scaler 
-    full = np.concatenate((np.array(fine_tune_data[name]),np.array(test[name])))
+    full =  np.array(fine_tune_data[name] + test[name]).reshape(-1, 1)
     print(np.array(fine_tune_data[name]).shape,np.array(test[name]).shape)
-    print(fine_tune_data[name])
-    print(test[name])
+    # print(fine_tune_data[name])
+    # print(test[name])
     scaler = MinMaxScaler()
-    # print(full) 
+    print(full) 
     break 
     scaler.fit_transform(full)
 
@@ -114,7 +114,11 @@ for name in target_name :
     
     model = maml.net
 
-    x , y = time_series_data(test[name], hyperconfig ,test_set.scaler)
+    x , y = time_series_data(test[name][0], hyperconfig ,test_set.scaler)
+    for i in range(len(test[name]-1)) : 
+        x_ , y_ = time_series_data(test[name][i+1], hyperconfig ,test_set.scaler)
+        x , y = np.concatenate(x, x_), np.concatenate(y, y_)
+
     x_tensor, y_tensor = torch.from_numpy(x).to(device), torch.from_numpy(y).to(device)
     pred = model(x_tensor, vars=fast_weights, bn_training=False)
     # print(y_tensor.shape, pred.shape)
