@@ -5,7 +5,7 @@ from utils import indicator
 import torch
 from model import MAML
 import numpy as np
-import tqdm
+from tqdm import tqdm
 from sklearn.preprocessing import MinMaxScaler
 
 
@@ -17,6 +17,7 @@ config = json.load(open("config.json", "r", encoding="utf8"))
 source_folder = config["source_folder"]
 source_name = config["source"]
 target_name = config["target"]
+
 
 for name in source_name:
     source_time = {
@@ -73,12 +74,12 @@ num = sum(map(lambda x: np.prod(x.shape), tmp))
 print(maml)
 print('Total trainable tensors:', num)
 
-
+epochs = hyperconfig["epochs"]
 # training 
 # print(train)
 training_set_and_loader = get_set_and_loader(train, hyperconfig, hyperconfig["n_way"] , True, None)
-for epoch in range(1):
-    print(epoch)
+for epoch in tqdm(range(epochs)):
+    # print(epoch)
     # fetch meta_batchsz num of episode each time
     train_set, train_load = training_set_and_loader
     step = 0
