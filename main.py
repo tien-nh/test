@@ -77,6 +77,8 @@ print('Total trainable tensors:', num)
 epochs = hyperconfig["epochs"]
 # training 
 # print(train)
+print("trian:  ", len(train))
+print(hyperconfig["n_way"])
 training_set_and_loader = get_set_and_loader(train, hyperconfig, hyperconfig["n_way"] , True, None)
 for epoch in tqdm(range(epochs)):
     # print(epoch)
