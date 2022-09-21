@@ -122,7 +122,7 @@ for name in target_name :
         x , y = np.concatenate((x, x_)), np.concatenate((y, y_))
 
     x_tensor, y_tensor = torch.from_numpy(x).to(device), torch.from_numpy(y).to(device)
-    x_tensor, y_tensor = torch.permute(x_tensor, (0,2,1)), torch.permute(y_tensor, (0,2,1))
+    x_tensor = torch.permute(x_tensor, (0,2,1)) #, torch.permute(y_tensor, (0,2,1))
     print("fix      " ,x_tensor.shape, y_tensor.shape)
     pred = model(x_tensor, vars=fast_weights, bn_training=False)
     # print(y_tensor.shape, pred.shape)
