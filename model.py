@@ -257,7 +257,7 @@ class Learner(nn.Module):
                     c_t = f_t * c_t + i_t * g_t
                     h_t = o_t * torch.tanh(c_t)
                     y = F.linear(h_t, w1, b1)
-                    output.append(y)
+                    output.append(y.unsqueeze(0))
                     # hidden_seq.append(h_t.unsqueeze(0))
                     
                 output = torch.cat(output, dim=0)
