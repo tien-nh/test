@@ -51,7 +51,7 @@ def get_set_and_loader(data, hyperconfig, n_way , shuffle = True, scale_to_test=
     dataset = StockDataset(data, hyperconfig, n_way, scale_to_test)
 
     loader = DataLoader(dataset = dataset, 
-                        batch_size = hyperconfig["n_way"], 
+                        batch_size = n_way, #hyperconfig["n_way"], 
                         shuffle = shuffle)
 
     return dataset, loader
