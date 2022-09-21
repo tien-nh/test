@@ -1,3 +1,4 @@
+from tkinter import Y
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -47,6 +48,39 @@ class Learner(nn.Module):
                 self.vars.append(w)
                 # [ch_out]
                 self.vars.append(nn.Parameter(torch.zeros(param[0])))
+            
+            elif name == 'lstm':
+                # [ch_in, hidden_sz]
+                w = nn.Parameter(torch.ones(param[0], param[1] * 4))
+                u = nn.Parameter(torch.ones(param[1], param[1] * 4))
+                
+                torch.nn.init.kaiming_normal_(w)
+                torch.nn.init.kaiming_normal_(u)
+                
+                self.vars.append(w)
+                self.vars.append(u)
+                self.vars.append(nn.Parameter(torch.zeros(param[1] * 4)))
+            
+            elif name == 'lstm_decoder':
+                # [ch_in, hidden_sz]
+                # [ch_out, ch_in]
+                w1 = nn.Parameter(torch.ones(param[0], param[1]))
+                # gain=1 according to cbfinn's implementation
+                torch.nn.init.kaiming_normal_(w1)
+                self.vars.append(w1)
+                # [ch_out]
+                self.vars.append(nn.Parameter(torch.zeros(param[0])))
+
+                # [ch_in, hidden_sz]
+                w = nn.Parameter(torch.ones(param[0], param[1] * 4))
+                u = nn.Parameter(torch.ones(param[1], param[1] * 4))
+                
+                torch.nn.init.kaiming_normal_(w)
+                torch.nn.init.kaiming_normal_(u)
+                
+                self.vars.append(w)
+                self.vars.append(u)
+                self.vars.append(nn.Parameter(torch.zeros(param[1] * 4)))
 
             elif name == 'bn':
                 # [ch_out]
@@ -60,6 +94,7 @@ class Learner(nn.Module):
                 running_var = nn.Parameter(torch.ones(param[0]), requires_grad=False)
                 self.vars_bn.extend([running_mean, running_var])
 
+            
 
             elif name in ['tanh', 'relu', 'upsample', 'avg_pool2d', 'max_pool2d',
                           'flatten', 'reshape', 'leakyrelu', 'sigmoid']:
@@ -84,6 +119,14 @@ class Learner(nn.Module):
             elif name == 'linear':
                 tmp = 'linear:(in:%d, out:%d)'%(param[1], param[0])
                 info += tmp + '\n'
+
+            elif name == 'lstm':
+                tmp = 'lstm:(in:%d, hidden:%d)'%(param[0], param[1])
+                info += tmp + '\n'    
+
+            elif name == 'lstm_decoder':
+                tmp = 'lstm_decoder:(in:%d, hidden:%d)'%(param[0], param[1])
+                info += tmp + '\n'    
 
             elif name == 'leakyrelu':
                 tmp = 'leakyrelu:(slope:%f)'%(param[0])
@@ -148,6 +191,86 @@ class Learner(nn.Module):
                 x = F.batch_norm(x, running_mean, running_var, weight=w, bias=b, training=bn_training)
                 idx += 2
                 bn_idx += 2
+            
+            elif name == 'lstm':
+                # đầu vào bs, seq_sz, in_dim, 
+                bs, seq_sz, in_dim = x.size()
+                # x = x.view(bs, seq_sz, in_dim)
+                # x =torch.permute(x, (0, 2, 1))          
+                h_t, c_t = (torch.zeros(bs, param[1], dtype=x.dtype).to(x.device), torch.zeros(bs, param[1], dtype=x.dtype).to(x.device))
+                
+                w, u, b = vars[idx], vars[idx + 1], vars[idx + 2]
+                
+                HS = param[1]    # hidden state
+                hidden_seq = []     
+                for t in range(seq_sz):
+                    x_t = x[:, t, :]
+                    # batch the computations into a single matrix multiplication
+                    gates = x_t @ w + h_t @ u + b
+                    i_t, f_t, g_t, o_t = (
+                        torch.sigmoid(gates[:, :HS]), # input
+                        torch.sigmoid(gates[:, HS:HS*2]), # forget
+                        torch.tanh(gates[:, HS*2:HS*3]),
+                        torch.sigmoid(gates[:, HS*3:]), # output
+                    )
+                    c_t = f_t * c_t + i_t * g_t
+                    h_t = o_t * torch.tanh(c_t)
+                    hidden_seq.append(h_t.unsqueeze(0))
+                    
+                hidden_seq = torch.cat(hidden_seq, dim=0)
+                ## reshape from shape (sequence, batch, feature) to (batch, sequence, feature)
+                # hidden_seq = hidden_seq.transpose(0, 1).contiguous()
+                
+                x = torch.permute(hidden_seq, (1, 0, 2))  #.view(bs, -1, seq_sz)
+                if param[2]:
+                    x = x[:,-1,:]
+                    
+                #print(x.size())
+                idx += 3
+
+            elif name == 'lstm_decoder':
+                # đầu vào bs, hidden_sate of encoder , 
+                
+               
+                # x =torch.permute(x, (0, 2, 1))    
+                w1, b1 = vars[idx], vars[idx + 1]
+                y = F.linear(x, w1, b1) # y.shape = bs, 1 
+
+                h_t, c_t = (torch.zeros(bs, param[1], dtype=x.dtype).to(x.device), torch.zeros(bs, param[1], dtype=x.dtype).to(x.device))
+                h_t = x 
+                w, u, b = vars[idx + 2], vars[idx + 3], vars[idx + 4]
+                
+                HS = param[1]    # hidden state
+                output = [] 
+                output.append(y)    
+                for t in range(param[2]-1):
+                    x_t = y
+                    # batch the computations into a single matrix multiplication
+                    gates = x_t @ w + h_t @ u + b
+                    i_t, f_t, g_t, o_t = (
+                        torch.sigmoid(gates[:, :HS]), # input
+                        torch.sigmoid(gates[:, HS:HS*2]), # forget
+                        torch.tanh(gates[:, HS*2:HS*3]),
+                        torch.sigmoid(gates[:, HS*3:]), # output
+                    )
+                    c_t = f_t * c_t + i_t * g_t
+                    h_t = o_t * torch.tanh(c_t)
+                    y = F.linear(h_t, w1, b1)
+                    output.append(y)
+                    # hidden_seq.append(h_t.unsqueeze(0))
+                    
+                output = torch.cat(output, dim=0)
+                ## reshape from shape (sequence, batch, feature) to (batch, sequence, feature)
+                # hidden_seq = hidden_seq.transpose(0, 1).contiguous()
+                
+                x = torch.permute(output, (1, 0, 2))  #.view(bs, -1, seq_sz)
+                # if param[2]:
+                #     x = x[:,-1,:].unsqueeze(1)
+                #print(x.size())
+                idx += 5
+                
+            
+                
 
             elif name == 'flatten':
                 # print(x.shape)
