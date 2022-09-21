@@ -207,6 +207,7 @@ class Learner(nn.Module):
                     x_t = x[:, t, :]
                     # batch the computations into a single matrix multiplication
                     gates = x_t @ w + h_t @ u + b
+                    # print(x_t.shape,w.shape, h_t.shape, b.shape )
                     i_t, f_t, g_t, o_t = (
                         torch.sigmoid(gates[:, :HS]), # input
                         torch.sigmoid(gates[:, HS:HS*2]), # forget
