@@ -57,13 +57,7 @@ model_config = [
     # ('relu', [True]),
     ('lstm', [1, 128, True]),
 
-     ('lstm_decoder', [1, 128, 12]),
-    ('relu', [True]),   
-   
-    ('linear', [16, 64]),
-    ('relu', [True]),
-
-    ('linear', [hyperconfig["p"], 16])
+     ('lstm_decoder', [1, 128, 12])
 ]
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
