@@ -263,7 +263,8 @@ class Learner(nn.Module):
                 output = torch.cat(output, dim=0)
                 ## reshape from shape (sequence, batch, feature) to (batch, sequence, feature)
                 # hidden_seq = hidden_seq.transpose(0, 1).contiguous()
-                print(output.shape)
+                print("y       ",y.shape)
+                print("outout       ",output.shape)
                 x = torch.permute(output, (1, 0, 2))  #.view(bs, -1, seq_sz)
                 # if param[2]:
                 #     x = x[:,-1,:].unsqueeze(1)
