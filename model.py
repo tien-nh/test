@@ -194,6 +194,7 @@ class Learner(nn.Module):
             
             elif name == 'lstm':
                 # đầu vào bs, seq_sz, in_dim, 
+                print(x.size())
                 bs, seq_sz, in_dim = x.size()
                 # x = x.view(bs, seq_sz, in_dim)
                 # x =torch.permute(x, (0, 2, 1))          
