@@ -91,7 +91,7 @@ for epoch in tqdm(range(epochs)):
         # print(x_spt.shape, y_spt.shape)
 
         accs = maml(x_spt, y_spt, x_qry, y_qry)
-print("train        ",x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
+# print("train        ",x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
 metrics = {}
 
 for name in target_name :
@@ -104,13 +104,13 @@ for name in target_name :
     test_set_and_loader = get_set_and_loader(tgt_data, hyperconfig, 1, False, scaler)
     test_set, test_load = test_set_and_loader
     for x_spt, y_spt, x_qry, y_qry in test_load:
-        print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape)
+        # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape)
 
         x_spt, y_spt=torch.permute(x_spt, (0,1,3,2)),torch.permute(y_spt, (0,1,3,2)) 
         x_qry, y_qry=torch.permute(x_qry, (0,1,3,2)),torch.permute(y_qry, (0,1,3,2)) 
         x_spt, y_spt, x_qry, y_qry = x_spt.squeeze(0).to(device), y_spt.squeeze(0).to(device), x_qry.squeeze(0).to(device), y_qry.squeeze(0).to(device)
-        print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape)
-        print("test     " , x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
+        # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape)
+        # print("test     " , x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
         accs, fast_weights = maml.finetunning(x_spt, y_spt, x_qry, y_qry)
 
    
@@ -122,6 +122,7 @@ for name in target_name :
         x , y = np.concatenate((x, x_)), np.concatenate((y, y_))
 
     x_tensor, y_tensor = torch.from_numpy(x).to(device), torch.from_numpy(y).to(device)
+    print("fix      " ,x_tensor.shape, y_tensor.shape)
     pred = model(x_tensor, vars=fast_weights, bn_training=False)
     # print(y_tensor.shape, pred.shape)
     label = test_set.reverse_normalize(y_tensor).numpy()
