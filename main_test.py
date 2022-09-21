@@ -91,7 +91,7 @@ for epoch in tqdm(range(epochs)):
         # print(x_spt.shape, y_spt.shape)
 
         accs = maml(x_spt, y_spt, x_qry, y_qry)
-print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
+print("train        ",x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
 metrics = {}
 
 for name in target_name :
@@ -109,7 +109,7 @@ for name in target_name :
         x_qry, y_qry=torch.permute(x_qry, (0,1,3,2)),torch.permute(y_qry, (0,1,3,2)) 
         x_spt, y_spt, x_qry, y_qry = x_spt.squeeze(0).to(device), y_spt.squeeze(0).to(device), x_qry.squeeze(0).to(device), y_qry.squeeze(0).to(device)
         # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape)
-        print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
+        print("test     " , x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
         accs, fast_weights = maml.finetunning(x_spt, y_spt, x_qry, y_qry)
 
    
