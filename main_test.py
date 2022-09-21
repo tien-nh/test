@@ -82,6 +82,8 @@ for epoch in tqdm(range(epochs)):
     step = 0
     for x_spt, y_spt, x_qry, y_qry in train_load:
         step += 1 
+        x_spt, y_spt=torch.permute(x_spt, (0,1,3,2)),torch.permute(y_spt, (0,1,3,2)) 
+        x_qry, y_qry=torch.permute(x_qry, (0,1,3,2)),torch.permute(y_qry, (0,1,3,2)) 
         x_spt, y_spt, x_qry, y_qry = x_spt.to(device), y_spt.to(device), x_qry.to(device), y_qry.to(device)
         # print()
         # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
