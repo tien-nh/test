@@ -9,5 +9,5 @@
     "k_shot" : 15,
     "k_query" : 25,
     "n_way" : 3,
-    "epochs" : 1
+    "epochs" : 100
 }
