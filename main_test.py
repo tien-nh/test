@@ -122,17 +122,19 @@ for name in target_name :
         x , y = np.concatenate((x, x_)), np.concatenate((y, y_))
 
     x_tensor, y_tensor = torch.from_numpy(x).to(device), torch.from_numpy(y).to(device)
-    x_tensor = torch.permute(x_tensor, (0,2,1)) #, torch.permute(y_tensor, (0,2,1))
-    print("fix      " ,x_tensor.shape, y_tensor.shape)
+    x_tensor, y_tensor = torch.permute(x_tensor, (0,2,1)) , torch.permute(y_tensor, (0,2,1))
+    
     pred = model(x_tensor, vars=fast_weights, bn_training=False)
+    print("fix      " ,x_tensor.shape, y_tensor.shape, pred.shape)
     # print(y_tensor.shape, pred.shape)
     label = test_set.reverse_normalize(y_tensor).numpy()
     pred1 = test_set.reverse_normalize(pred.detach()).numpy()
     metrics[name] = indicator(torch.tensor(pred1), torch.tensor(label))
+    break
 
 
 results = pd.DataFrame.from_dict(metrics, orient='index')
-name_file_csv =  "results/metric_" + str(hyperconfig["p"]) + "_.csv"
+name_file_csv =  "results/metric_" + str(hyperconfig["p"]) + "_decoder_maml.csv"
 results.to_csv(name_file_csv)
 
 
