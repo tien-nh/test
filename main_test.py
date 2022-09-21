@@ -88,7 +88,7 @@ for epoch in tqdm(range(epochs)):
         # print()
         # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
         # print()
-        print(x_spt.shape, y_spt.shape)
+        # print(x_spt.shape, y_spt.shape)
 
         accs = maml(x_spt, y_spt, x_qry, y_qry)
 
