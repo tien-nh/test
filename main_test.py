@@ -86,7 +86,8 @@ for epoch in tqdm(range(epochs)):
         # print()
         # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape) 
         # print()
-        # print(x_spt.shape, y_spt.shape)
+        print(x_spt.shape, y_spt.shape)
+
         accs = maml(x_spt, y_spt, x_qry, y_qry)
 
 metrics = {}
@@ -103,7 +104,7 @@ for name in target_name :
     for x_spt, y_spt, x_qry, y_qry in test_load:
         # print(x_spt.shape, y_spt.shape, x_qry.shape, y_qry.shape)
         x_spt, y_spt, x_qry, y_qry = x_spt.squeeze(0).to(device), y_spt.squeeze(0).to(device), x_qry.squeeze(0).to(device), y_qry.squeeze(0).to(device)
-        print(x_spt.shape)
+        
         accs, fast_weights = maml.finetunning(x_spt, y_spt, x_qry, y_qry)
     
     model = maml.net
