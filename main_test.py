@@ -55,9 +55,9 @@ hyperconfig = json.load(open("hyperpara.json", "r"))
 model_config = [
     # ('linear', [128, hyperconfig["l"]]),
     # ('relu', [True]),
-    ('lstm', [1, 128, True]),
+    ('lstm', [1, 64, True]),
 
-     ('lstm_decoder', [1, 128, 24])
+     ('lstm_decoder', [1, 64, hyperconfig["p"]])
 ]
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -125,12 +125,12 @@ for name in target_name :
     x_tensor = torch.permute(x_tensor, (0,2,1)) #, torch.permute(y_tensor, (0,2,1))
     
     pred = model(x_tensor, vars=fast_weights, bn_training=False)
-    print("fix      " ,x_tensor.shape, y_tensor.shape, pred.shape)
+    
     # print(y_tensor.shape, pred.shape)
     label = test_set.reverse_normalize(y_tensor).numpy()
     pred1 = test_set.reverse_normalize(pred.detach()).numpy()
     metrics[name] = indicator(torch.tensor(pred1), torch.tensor(label))
-    break
+    
 
 
 results = pd.DataFrame.from_dict(metrics, orient='index')
