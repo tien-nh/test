@@ -1,7 +1,7 @@
 {
     "l" : 48,
     "n" : 0,
-    "p" : 24,
+    "p" : 6,
     "update_lr" : 0.001,
     "meta_lr" : 0.001 ,
     "update_step" : 30 ,
@@ -9,5 +9,5 @@
     "k_shot" : 15,
     "k_query" : 25,
     "n_way" : 3,
-    "epochs" : 100
+    "epochs" : 1
 }
