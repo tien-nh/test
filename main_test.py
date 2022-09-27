@@ -145,7 +145,7 @@ for name in target_name :
     plt.plot(range(len(pred1)), pred1, label='maml_mlp')
     plt.xlabel(name)
     plt.ylabel('Close')
-    name_file = 'maml_lstm' + name + '.png'
+    name_file = 'results/plot/maml_EnDecoder'+str(hyperconfig["p"])+name+'.png'
     fig.savefig(name_file)
     plt.legend()
     plt.show()
