@@ -1,13 +1,13 @@
 import json
 import pandas as pd
-from utils import load_time_data, get_set_and_loader , time_series_data
+from utils import load_time_data, get_set_and_loader , time_series_data, time_series_data_to_test
 from utils import indicator
 import torch
 from model import MAML
 import numpy as np
 from tqdm import tqdm
 from sklearn.preprocessing import MinMaxScaler
-
+import matplotlib.pyplot as plt
 
 train = []
 test = {}
@@ -131,6 +131,24 @@ for name in target_name :
     pred1 = test_set.reverse_normalize(pred.detach()).numpy()
     metrics[name] = indicator(torch.tensor(pred1), torch.tensor(label))
     
+    #plot 
+    x , y = time_series_data_to_test(test[name][-1], hyperconfig ,test_set.scaler)
+    x_tensor, y_tensor = torch.from_numpy(x).to(device), torch.from_numpy(y).to(device)
+    x_tensor = torch.permute(x_tensor, (0,2,1))
+    pred = model(x_tensor, vars=fast_weights, bn_training=False)
+    
+    label = test_set.reverse_normalize(y_tensor).numpy()
+    pred1 = test_set.reverse_normalize(pred.detach()).numpy()
+    fig = plt.figure() 
+    fig.set_size_inches(40, 15)
+    plt.plot(range(len(label)),label, label='Ground truth')
+    plt.plot(range(len(pred1)), pred1, label='maml_mlp')
+    plt.xlabel(name)
+    plt.ylabel('Close')
+    name_file = 'maml_lstm' + name + '.png'
+    fig.savefig(name_file)
+    plt.legend()
+    plt.show()
 
 
 results = pd.DataFrame.from_dict(metrics, orient='index')

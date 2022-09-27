@@ -46,6 +46,35 @@ def time_series_data(dataset, hyperconfig, scaler):
     y = np.array(y)
     return x, y
 
+
+# function to plot
+def time_series_data_to_test(dataset, hyperconfig, scaler): 
+    l, n, p = hyperconfig["l"], hyperconfig["n"], hyperconfig["p"]
+    # dataset = dataset[-200:]
+    data_length = len(dataset) - l - n - p + 1
+    print(data_length)
+    data = dataset
+    data = scaler.transform(data)
+    x = []
+    y = []
+    for idx in range(data_length):
+        idx2test = idx * 5 
+        if idx2test + 5 >= data_length : break   # cắt đuôi
+
+        x_idx = data[idx2test:idx2test+l].reshape(1,-1)
+        # y_idx = data[idx+l+n: idx+l+n+p] + data[idx+l-1 : idx+l]
+        y_idx = data[idx2test+l+n: idx2test+l+n+p] 
+        
+        x.append(x_idx)
+        y.append(y_idx)
+    x = np.array(x)
+    y = np.array(y)
+    return x, y 
+
+
+
+
+
 def get_set_and_loader(data, hyperconfig, n_way , shuffle = True, scale_to_test=None):
     # Create dataset and loader from data frame
     dataset = StockDataset(data, hyperconfig, n_way, scale_to_test)
