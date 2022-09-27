@@ -36,8 +36,8 @@ def time_series_data_to_test(dataset, hyperconfig, scaler):
     x = []
     y = []
     for idx in range(data_length):
-        idx2test = idx * 5 
-        if idx2test + 5 >= data_length : break   # cắt đuôi
+        idx2test = idx * p 
+        if idx2test + p >= data_length : break   # cắt đuôi
 
         x_idx = data[idx2test:idx2test+l].reshape(1,-1)
         # y_idx = data[idx+l+n: idx+l+n+p] + data[idx+l-1 : idx+l]
