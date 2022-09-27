@@ -7,28 +7,6 @@ import pandas as pd
 import torch.nn as nn
 import torch
 
-# def time_series_data(dataset, l, n, p, scaler): 
-#     data_length = len(dataset) - l - n - p + 1
-#     print(data_length)
-#     data = dataset
-#     data = scaler.transform(data)
-#     x = []
-#     y = []
-#     for idx in range(data_length):
-#         idx2test = idx * 5 
-#         if idx2test + 5 >= data_length : break   # cắt đuôi
-
-#         x_idx = data[idx2test:idx2test+l].reshape(1,-1)
-#         # y_idx = data[idx+l+n: idx+l+n+p] + data[idx+l-1 : idx+l]
-#         y_idx = data[idx2test+l+n: idx2test+l+n+p] 
-
-        
-#         x.append(x_idx)
-#         y.append(y_idx.transpose())
-#     x = np.array(x)
-#     y = np.array(y)
-#     return x, y 
-
 def time_series_data(dataset, hyperconfig, scaler): 
     l, n, p = hyperconfig["l"], hyperconfig["n"], hyperconfig["p"]
     data_length = len(dataset) - l - n - p + 1

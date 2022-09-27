@@ -30,7 +30,7 @@ for name in source_name:
 
 for name in target_name:
     target_time = {
-    "start": "2022-06-08 23:59:59",
+    "start": "2022-06-19 23:59:59",
     "finish": "2023-01-01 00:00:00"
     }
     data = load_time_data(source_folder, name, target_time)
@@ -41,8 +41,8 @@ for name in target_name:
 fine_tune_data = {}
 for name in target_name:
     test_time = {
-    "start": config["start-test"],
-    "finish": config["finish-test"]
+    "start": config["start-finetune"],
+    "finish": config["finish-finetune"]
     }
     data = load_time_data(source_folder, name, test_time)
     fine_tune_data[name] = data
