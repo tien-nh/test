@@ -7,6 +7,12 @@ from model import MAML
 import numpy as np
 from tqdm import tqdm
 from sklearn.preprocessing import MinMaxScaler
+import argparse
+
+
+parser = argparse.ArgumentParser(description='maml_mlp')
+
+
 
 
 train = []

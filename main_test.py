@@ -8,6 +8,33 @@ import numpy as np
 from tqdm import tqdm
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
+import csv
+# import argparse
+# parser = argparse.ArgumentParser(description='maml_mlp')
+
+# parser.add_argument('--n_way', type=int, default=3, metavar='n_way',
+#                     help='number of random file is select in training (default: 3)')
+# parser.add_argument('--k_query', type=int, default=25, metavar='k_query',
+#                     help='input batch size for query (default: 25)')
+# parser.add_argument('--k_shot', type=int, default=15, metavar='k_shot',
+#                     help='input batch size for shot (default: 15)')
+
+# parser.add_argument('--l', type=int, default=48, metavar='l',
+#                     help='number of timestep to input (default: 48)')
+# parser.add_argument('--p', type=int, default=6, metavar='p',
+#                     help='number of timestep to predict (default: 6)')
+
+# parser.add_argument('--epochs', type=int, default=100, metavar='epochs',
+#                     help='number of epochs to train (default: 100)')
+# parser.add_argument('--update_step', type=int, default=30, metavar='update_step',
+#                     help='number of epochs to finetune (default: 30)')
+
+# parser.add_argument('--meta_lr', type=float, default=0.001, metavar='meta_lr',
+#                     help='meta learning rate (default: 0.001)')
+# parser.add_argument('--update_lr', type=float, default=0.001, metavar='update_lr',
+#                     help='learning rate to update (default: 0.001)')
+
+# args = parser.parse_args() 
 
 train = []
 test = {}
@@ -141,11 +168,16 @@ for name in target_name :
     pred1 = test_set.reverse_normalize(pred.detach()).numpy()
     fig = plt.figure() 
     fig.set_size_inches(40, 15)
+    file = open('results/predict/' + name + '_lstm_encoder_decoder.csv', 'w')
+    writer = csv.writer(file)
+    writer.writerow(pred1)
+    file.close()
     plt.plot(range(len(label)),label, label='Ground truth')
     plt.plot(range(len(pred1)), pred1, label='maml_mlp')
     plt.xlabel(name)
     plt.ylabel('Close')
     name_file = 'results/plot/maml_EnDecoder'+str(hyperconfig["p"])+name+'.png'
+
     fig.savefig(name_file)
     plt.legend()
     plt.show()
