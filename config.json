@@ -14,9 +14,7 @@
             "S0000264_FDS - Tôn Thất Thuyết.csv",
             "S0000289_Nhân Chính.csv",
             "S0000262_Lý Thái Tổ.csv"],
-"target" : ["S0000153_Trường Tiểu học Trần Quốc Toản.csv",
-          "S0000346_Định Công.csv", "S0000229_Quan Hoa.csv", 
-          "S0000339_Kim Mã.csv", "S0000310_Hàng Trống.csv"],
+"target" : ["S0000153_Trường Tiểu học Trần Quốc Toản.csv"],
 
 "source_folder" : "res",
 
